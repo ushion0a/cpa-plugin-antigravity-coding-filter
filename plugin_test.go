@@ -142,7 +142,7 @@ custom_mappings:
 	}
 }
 
-func TestHandlePluginCallRequestInterceptBeforeRewritesCodingSignals(t *testing.T) {
+func TestHandlePluginCallRequestInterceptBeforeDefersRewriteUntilDestinationKnown(t *testing.T) {
 	defer restoreDefaultFilterConfig(t)
 	applyFilterConfig(filterConfig{Mode: filterModeRewrite, UseDefaultKeywords: true})
 
@@ -163,12 +163,8 @@ func TestHandlePluginCallRequestInterceptBeforeRewritesCodingSignals(t *testing.
 	if !envelope.OK {
 		t.Fatalf("ok = false, want true")
 	}
-	body, err := base64.StdEncoding.DecodeString(envelope.Result.Body)
-	if err != nil {
-		t.Fatalf("decode body: %v", err)
-	}
-	if !strings.Contains(string(body), "You are Antigravity.") {
-		t.Fatalf("body = %s, want rewritten system", body)
+	if envelope.Result.Body != "" {
+		t.Fatalf("Body = %q, want empty body before destination selection", envelope.Result.Body)
 	}
 }
 

@@ -135,9 +135,9 @@ func handlePluginCall(method string, request []byte) ([]byte, int) {
 			Headers:    jsonHeaders(),
 		}), 0
 	case pluginabi.MethodRequestInterceptBefore:
-		return handleRequestInterceptBefore(request), 0
-	case pluginabi.MethodRequestInterceptAfter:
 		return mustEnvelope(pluginapi.RequestInterceptResponse{}), 0
+	case pluginabi.MethodRequestInterceptAfter:
+		return handleRequestInterceptAfter(request), 0
 	default:
 		return mustErrorEnvelope("unknown_method", fmt.Sprintf("unknown method %q", method)), 0
 	}
@@ -265,13 +265,13 @@ func jsonHeaders() http.Header {
 	return http.Header{"content-type": []string{"application/json"}}
 }
 
-func handleRequestInterceptBefore(request []byte) []byte {
+func handleRequestInterceptAfter(request []byte) []byte {
 	var req pluginapi.RequestInterceptRequest
 	if err := json.Unmarshal(request, &req); err != nil {
-		return mustErrorEnvelope("invalid_request", fmt.Sprintf("decode request.intercept_before request: %v", err))
+		return mustErrorEnvelope("invalid_request", fmt.Sprintf("decode request.intercept_after request: %v", err))
 	}
 	cfg := activeFilterConfig()
-	if cfg.Mode != filterModeRewrite {
+	if cfg.Mode != filterModeRewrite || req.ToFormat != "antigravity" {
 		return mustEnvelope(pluginapi.RequestInterceptResponse{})
 	}
 
