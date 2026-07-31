@@ -7,9 +7,11 @@ CLIProxyAPI v7 dynamic plugin for blocking or rewriting non-Antigravity coding s
 The plugin detects configured coding-client names when they appear inside JSON fields named `system`. Choose how matches are handled with `mode`:
 
 - `block` (default): reject the entire request with HTTP `403 Forbidden` and a `blocked_by_antigravity_coding_filter` error.
-- `rewrite`: replace matched names with `Antigravity` and forward the request.
+- `rewrite`: replace matched names with `Antigravity` only after CLIProxyAPI selects the Antigravity upstream, then forward the request. Requests selected for other upstreams are left unchanged.
 
 Matching is case-insensitive and only scans `system`. Mentions in user prompts, `messages`, or other fields do not trigger the filter.
+
+Rewrite scoping uses CLIProxyAPI's post-authentication `ToFormat` value rather than model-name prefixes, so model aliases, model pools, and provider remapping cannot cause a request routed elsewhere to be rewritten accidentally.
 
 HTTP 403 propagation requires CLIProxyAPI v7.2.93 or newer. Earlier hosts do not understand the plugin RPC `http_status` error field.
 
