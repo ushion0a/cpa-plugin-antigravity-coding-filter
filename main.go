@@ -365,6 +365,8 @@ var defaultRewriteMappings = []rewriteMapping{
 	{Match: "CodiumAI", Replacement: "Antigravity"},
 	{Match: "Rovo Dev CLI", Replacement: "Antigravity"},
 	{Match: "Factory Droid", Replacement: "Antigravity"},
+	{Match: "OmO", Replacement: "Antigravity"},
+
 
 	// General-purpose local agents that can generate and modify code.
 	{Match: "OpenClaw", Replacement: "Antigravity"},
