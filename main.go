@@ -374,6 +374,8 @@ var defaultRewriteMappings = []rewriteMapping{
 	{Match: "Rovo Dev CLI", Replacement: "Antigravity"},
 	{Match: "Factory Droid", Replacement: "Antigravity"},
 	{Match: "OmO", Replacement: "Antigravity"},
+	{Match: "DeepSeek", Replacement: "Antigravity"},
+	{Match: "DeepSeek Harness", Replacement: "Antigravity"},
 
 	// General-purpose local agents that can generate and modify code.
 	{Match: "OpenClaw", Replacement: "Antigravity"},
