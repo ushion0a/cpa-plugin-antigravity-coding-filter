@@ -11,6 +11,8 @@ The plugin detects configured coding-client names when they appear inside JSON f
 
 Matching is case-insensitive and only scans `system`. Mentions in user prompts, `messages`, or other fields do not trigger the filter.
 
+When no configured keyword matches, requests selected for the Antigravity upstream automatically receive Antigravity's system prompt in either mode. Existing instructions and user content are preserved. String and text-block system prompts, empty or missing prompts, OpenAI system messages, Responses instructions, and Gemini system instructions are supported. A system prompt that already mentions Antigravity is left unchanged, so repeated interception does not duplicate the prompt. Requests selected for other upstreams are left unchanged.
+
 Rewrite scoping uses CLIProxyAPI's post-authentication `ToFormat` value rather than model-name prefixes, so model aliases, model pools, and provider remapping cannot cause a request routed elsewhere to be rewritten accidentally.
 
 HTTP 403 propagation requires CLIProxyAPI v7.2.93 or newer. Earlier hosts do not understand the plugin RPC `http_status` error field.

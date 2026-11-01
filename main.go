@@ -271,11 +271,19 @@ func handleRequestInterceptAfter(request []byte) []byte {
 		return mustErrorEnvelope("invalid_request", fmt.Sprintf("decode request.intercept_after request: %v", err))
 	}
 	cfg := activeFilterConfig()
-	if cfg.Mode != filterModeRewrite || req.ToFormat != "antigravity" {
+	if req.ToFormat != "antigravity" {
 		return mustEnvelope(pluginapi.RequestInterceptResponse{})
 	}
 
-	body, rewritten := rewriteRequestBodyWithConfig(req.Body, cfg)
+	var body []byte
+	var rewritten bool
+	if classifyRequestWithConfig(req.Body, cfg).Blocked {
+		if cfg.Mode == filterModeRewrite {
+			body, rewritten = rewriteRequestBodyWithConfig(req.Body, cfg)
+		}
+	} else {
+		body, rewritten = addAntigravitySystemPrompt(req.Body, req.SourceFormat)
+	}
 	if !rewritten {
 		return mustEnvelope(pluginapi.RequestInterceptResponse{})
 	}
@@ -366,7 +374,6 @@ var defaultRewriteMappings = []rewriteMapping{
 	{Match: "Rovo Dev CLI", Replacement: "Antigravity"},
 	{Match: "Factory Droid", Replacement: "Antigravity"},
 	{Match: "OmO", Replacement: "Antigravity"},
-
 
 	// General-purpose local agents that can generate and modify code.
 	{Match: "OpenClaw", Replacement: "Antigravity"},
